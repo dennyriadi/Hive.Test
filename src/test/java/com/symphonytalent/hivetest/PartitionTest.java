@@ -5,6 +5,7 @@ import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,11 +30,11 @@ public class PartitionTest {
   private String joinStringCollection(List<String> coll) {
     return String.join("\n", coll);
   }
-//
-//  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-20/data.json")
-//  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-20/data.json"));
-//  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-21/data.json")
-//  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-21/data.json"));
+
+  @HiveResource(targetFile = "${hive.data.dir}/events/date=2016-12-20/data.json")
+  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-20/data.json"));
+  @HiveResource(targetFile = "${hiveconf:hive.data.dir}/events/date=2016-12-21/data.json")
+  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-21/data.json"));
 
 
   @HiveSQL(files = {
@@ -41,6 +42,11 @@ public class PartitionTest {
   }, autoStart = false)
 
   private HiveShell hiveShell;
+
+  @Before
+  public void repair() {
+    hiveShell.execute("MSCK REPAIR TABLE events");
+  }
 
   @Test
   public void testPartitionValidRange() {
