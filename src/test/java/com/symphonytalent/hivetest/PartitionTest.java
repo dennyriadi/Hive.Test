@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @RunWith(StandaloneHiveRunner.class)
-public class PartitionTests {
+public class PartitionTest {
   private List<String> readFile(String path) {
     try {
       return Files.readAllLines(Paths.get(path));
@@ -29,11 +29,11 @@ public class PartitionTests {
   private String joinStringCollection(List<String> coll) {
     return String.join("\n", coll);
   }
-
-  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-20/data.json")
-  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-20/data.json"));
-  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-21/data.json")
-  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-21/data.json"));
+//
+//  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-20/data.json")
+//  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-20/data.json"));
+//  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/events/date=2016-12-21/data.json")
+//  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-21/data.json"));
 
 
   @HiveSQL(files = {
