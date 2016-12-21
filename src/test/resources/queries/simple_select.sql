@@ -1,3 +1,0 @@
-SELECT *
-FROM event
-WHERE ID = 1;

@@ -7,40 +7,18 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.nio.file.Files;
 import java.util.List;
-
-
 
 @RunWith(StandaloneHiveRunner.class)
 public class CsvTest {
-    private List<String> readFile(String path) {
-        try {
-            return Files.readAllLines(Paths.get(path));
-        } catch (IOException ex) {
-            System.err.println("Caught IOException: " + ex.getMessage());
-            return null;
-        }
-    }
 
-    private String joinStringCollection(List<String> coll) {
-        return String.join("\n", coll);
-    }
-
-    private List<Object[]> executeStatementFromFile(HiveShell hiveShell, String filepath) {
-        String stmt = joinStringCollection(readFile(filepath)).replace(";", "");
-        return hiveShell.executeStatement(stmt);
-    }
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/profile/1.csv")
-    private String profileData = joinStringCollection(readFile("src/test/resources/sampleData/profile_data.csv"));
+    private String profileData = Util.joinStringCollection(Util.readFile("src/test/resources/sampleData/profile_data.csv"));
 
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/interest/1.csv")
-    private String interestData = joinStringCollection(readFile("src/test/resources/sampleData/interest_data.csv"));
-
+    private String interestData = Util.joinStringCollection(Util.readFile("src/test/resources/sampleData/interest_data.csv"));
 
     @HiveSQL(files = {
             "queries/create_profile_table.hql",
@@ -60,8 +38,8 @@ public class CsvTest {
         };
 
         hiveShell.start();
-        List<Object[]> actualResult = executeStatementFromFile(hiveShell,
-                "src/test/resources/queries/simple_select.hql");
+        List<Object[]> actualResult = hiveShell.executeStatement(Util.transformQueryFileToStatementString(
+            "src/test/resources/queries/simple_select.hql"));
 
 
         Assert.assertArrayEquals(expectedResult, actualResult.get(0));
@@ -70,13 +48,13 @@ public class CsvTest {
     @Test
     public void testGroupByCount() {
         Object[] expectedResult = new Object[] {
-                "Accounts",
-                3L
+            "Accounts",
+            3L
         };
 
         hiveShell.start();
-        List<Object[]> actualResult = executeStatementFromFile(hiveShell,
-                "src/test/resources/queries/select_count.hql");
+        List<Object[]> actualResult = hiveShell.executeStatement(Util.transformQueryFileToStatementString(
+            "src/test/resources/queries/select_count.hql"));
 
         Assert.assertArrayEquals(expectedResult, actualResult.get(0));
     }

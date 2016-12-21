@@ -29,6 +29,9 @@
                 <version>2.19</version>
                 <configuration>
                     <forkMode>always</forkMode>
+                    <systemProperties>
+                        <hiveconf_hadoop.jar.dir>src/test/resources/jars</hiveconf_hadoop.jar.dir>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>

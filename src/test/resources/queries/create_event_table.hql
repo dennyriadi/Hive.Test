@@ -1,3 +1,5 @@
+ADD JAR ${hiveconf:hadoop.jar.dir}/json-serde.jar;
+
 SET mapred.output.compress=true;
 SET hive.exec.compress.output=true;
 SET mapred.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec;
@@ -11,19 +13,13 @@ SET mapreduce.map.java.opts=-Xmx4608m;
 SET mapreduce.reduce.memory.mb=5120;
 SET mapreduce.reduce.java.opts=-Xmx4608m;
 
-CREATE EXTERNAL TABLE profile (
-    id STRING,
-    type STRING,
-    created TIMESTAMP,
-    score INT,
-    active BOOLEAN
-)
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-"separatorChar" = ",",
-"quoteChar" = "\""
-)
+CREATE EXTERNAL TABLE event (
+	requestid STRING,
+	profileid STRING,
+	product STRING,
+	event STRING)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
 STORED AS TEXTFILE
-LOCATION '${hiveconf:hadoop.tmp.dir}/profile';
+LOCATION '${hiveconf:hadoop.tmp.dir}/event';
 
 MSCK REPAIR TABLE profile;
