@@ -29,9 +29,6 @@
                 <version>2.19</version>
                 <configuration>
                     <forkMode>always</forkMode>
-                    <systemProperties>
-                        <hiveconf_hive.execution.engine>tez</hiveconf_hive.execution.engine>
-                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
