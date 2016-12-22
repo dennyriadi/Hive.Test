@@ -31,38 +31,33 @@ public class PartitionTest {
     return String.join("\n", coll);
   }
 
-  @HiveResource(targetFile = "${hive.data.dir}/events/date=2016-12-20/data.json")
-  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-20/data.json"));
-  @HiveResource(targetFile = "${hiveconf:hive.data.dir}/events/date=2016-12-21/data.json")
-  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/events/date=2016-12-21/data.json"));
+  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/emailevents/date=2016-12-20/data.json")
+  private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/emailevents/data1.json"));
+  @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/emailevents/date=2016-12-21/data.json")
+  private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/emailevents/data2.json"));
 
 
   @HiveSQL(files = {
-    "queries/create_event_table.hql"
+          "queries/create_email_event_table.hql"
   }, autoStart = false)
-
   private HiveShell hiveShell;
 
   @Before
-  public void repair() {
-    hiveShell.execute("MSCK REPAIR TABLE events");
+  public void start() {
+    hiveShell.start();
   }
 
   @Test
   public void testPartitionValidRange() {
-    hiveShell.start();
-
     List<Object[]> result = hiveShell.executeStatement(
-      "SELECT * FROM events WHERE date >= '2016-12-20' AND date <= '2016-12-21'");
+      "SELECT * FROM email_event WHERE date >= '2016-12-20' AND date <= '2016-12-21'");
     Assert.assertEquals(2, result.size());
   }
 
   @Test
   public void testPartitionInvalidRange() {
-    hiveShell.start();
-
     List<Object[]> result = hiveShell.executeStatement(
-      "SELECT * FROM events WHERE date >= '2016-10-10' AND date <= '2016-11-13'");
+      "SELECT * FROM email_event WHERE date >= '2016-10-10' AND date <= '2016-11-13'");
     Assert.assertEquals(0, result.size());
   }
 }
