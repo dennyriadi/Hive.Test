@@ -1,3 +1,5 @@
+ADD JAR ${hiveconf:hadoop.jar.dir}/csv-serde.jar;
+
 SET mapred.output.compress=true;
 SET hive.exec.compress.output=true;
 SET mapred.output.compression.codec=org.apache.hadoop.io.compress.GzipCodec;
@@ -18,11 +20,7 @@ CREATE EXTERNAL TABLE profile (
     score INT,
     active BOOLEAN
 )
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-"separatorChar" = ",",
-"quoteChar" = "\""
-)
+ROW FORMAT SERDE 'com.bizo.hive.serde.csv.CSVSerde'
 STORED AS TEXTFILE
 LOCATION '${hiveconf:hadoop.tmp.dir}/profile';
 

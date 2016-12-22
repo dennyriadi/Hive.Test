@@ -5,6 +5,7 @@ import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveResource;
 import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.nio.file.Paths;
@@ -12,8 +13,6 @@ import java.util.List;
 
 @RunWith(StandaloneHiveRunner.class)
 public class CsvTest {
-
-
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/profile/1.csv")
     private String profileData = Util.joinStringCollection(Util.readFile("src/test/resources/sampleData/profile_data.csv"));
 
@@ -27,6 +26,11 @@ public class CsvTest {
     }, autoStart = false)
     private HiveShell hiveShell;
 
+    @Before
+    public void start() {
+        hiveShell.start();
+    }
+
     @Test
     public void testSelectWhere() {
         Object[] expectedResult = new Object[] {
@@ -37,10 +41,8 @@ public class CsvTest {
                 "FALSE"
         };
 
-        hiveShell.start();
         List<Object[]> actualResult = hiveShell.executeStatement(Util.transformQueryFileToStatementString(
             "src/test/resources/queries/simple_select.hql"));
-
 
         Assert.assertArrayEquals(expectedResult, actualResult.get(0));
     }
@@ -52,7 +54,6 @@ public class CsvTest {
             3L
         };
 
-        hiveShell.start();
         List<Object[]> actualResult = hiveShell.executeStatement(Util.transformQueryFileToStatementString(
             "src/test/resources/queries/select_count.hql"));
 
@@ -61,7 +62,6 @@ public class CsvTest {
 
     @Test
     public void testJoin() {
-        hiveShell.start();
         hiveShell.execute(Paths.get("src/test/resources/queries/insert_join.hql"));
 
         List<Object[]> result = hiveShell.executeStatement(

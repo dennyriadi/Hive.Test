@@ -14,8 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-
-
 @RunWith(StandaloneHiveRunner.class)
 public class PartitionTest {
   private List<String> readFile(String path) {
@@ -35,7 +33,6 @@ public class PartitionTest {
   private String eventData1 = joinStringCollection(readFile("src/test/resources/sampleData/emailevents/data1.json"));
   @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/emailevents/date=2016-12-21/data1.json")
   private String eventData2 = joinStringCollection(readFile("src/test/resources/sampleData/emailevents/data2.json"));
-
 
   @HiveSQL(files = {
           "queries/create_email_event_table.hql"
