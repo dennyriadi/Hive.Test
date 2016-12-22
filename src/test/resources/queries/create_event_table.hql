@@ -22,4 +22,4 @@ ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
 STORED AS TEXTFILE
 LOCATION '${hiveconf:hadoop.tmp.dir}/event';
 
-MSCK REPAIR TABLE profile;
+MSCK REPAIR TABLE event;

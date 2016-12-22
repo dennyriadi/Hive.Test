@@ -1,6 +1,5 @@
 package com.symphonytalent.hivetest;
 
-
 import com.klarna.hiverunner.HiveShell;
 import com.klarna.hiverunner.StandaloneHiveRunner;
 import com.klarna.hiverunner.annotations.HiveResource;
@@ -8,21 +7,14 @@ import com.klarna.hiverunner.annotations.HiveSQL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RunWith(StandaloneHiveRunner.class)
 public class JsonTest {
-
-
-    @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/profile/1.csv")
-    private String profileData = Util.joinStringCollection(Util.readFile("src/test/resources/sampleData/profile_data.csv"));
-
     @HiveResource(targetFile = "${hiveconf:hadoop.tmp.dir}/event/1.csv")
     private String eventData = Util.joinStringCollection(Util.readFile("src/test/resources/sampleData/event_data.json"));
 
     @HiveSQL(files = {
-            "queries/create_profile_table.hql",
             "queries/create_event_table.hql"
     }, autoStart = false)
     private HiveShell hiveShell;
